@@ -1,0 +1,26 @@
+From f01021b8dc57de923efc901873e06d87bb9d4cff Mon Sep 17 00:00:00 2001
+From: machangbao <machangbao@rt.com>
+Date: Fri, 15 Nov 2024 16:54:07 +0800
+Subject: [PATCH 2/2] build imx-sdma as a module instand of builtin
+
+imx-sdma.ko will be installed after system bootup to fix hciattach/hciconfig-up timeout issue
+---
+ arch/arm64/configs/imx8mp_eg5120_defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/configs/imx8mp_eg5120_defconfig b/arch/arm64/configs/imx8mp_eg5120_defconfig
+index 703e6a5d4..6d343618b 100644
+--- a/arch/arm64/configs/imx8mp_eg5120_defconfig
++++ b/arch/arm64/configs/imx8mp_eg5120_defconfig
+@@ -4700,7 +4700,7 @@ CONFIG_FSL_EDMA=y
+ # CONFIG_FSL_QDMA is not set
+ CONFIG_FSL_EDMA_V3=y
+ # CONFIG_IMX_DMA is not set
+-CONFIG_IMX_SDMA=y
++CONFIG_IMX_SDMA=m
+ # CONFIG_INTEL_IDMA64 is not set
+ CONFIG_MV_XOR_V2=y
+ CONFIG_MXS_DMA=y
+-- 
+2.30.2
+

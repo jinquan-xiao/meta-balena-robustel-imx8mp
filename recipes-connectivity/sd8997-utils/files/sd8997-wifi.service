@@ -1,0 +1,14 @@
+[Unit]
+Description=Robustel sd8997 WIFI setup service
+Before=network.target
+After=sysinit.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/etc/wifi/sd8997-wifi start
+ExecStop=/etc/wifi/sd8997-wifi stop
+
+[Install]
+WantedBy=network.target
+

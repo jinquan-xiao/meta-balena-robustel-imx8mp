@@ -1,0 +1,12 @@
+[Unit]
+Description=Robustel sd8997 Bluetooth setup service
+After=sd8997-wifi.service
+Before=bluetooth.target
+
+[Service]
+Type=forking
+ExecStart=/etc/bluetooth/sd8997-bt start
+ExecStop=/etc/bluetooth/sd8997-bt stop
+
+[Install]
+WantedBy=multi-user.target

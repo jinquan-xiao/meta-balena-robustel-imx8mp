@@ -1,0 +1,15 @@
+[Unit]
+Description=Hardware interface dtb overlay service
+ConditionPathExists=/etc/dtboverlay/dtboverlay.sh
+
+[Service]
+Type=forking
+ExecStart=/etc/dtboverlay/dtboverlay.sh start
+ExecStop=/etc/dtboverlay/dtboverlay.sh stop
+TimeoutSec=0
+StandardOutput=journal
+RemainAfterExit=yes
+SysVStartPriority=99
+
+[Install]
+WantedBy=multi-user.target

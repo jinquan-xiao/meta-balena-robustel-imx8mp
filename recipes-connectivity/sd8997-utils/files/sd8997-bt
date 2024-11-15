@@ -1,0 +1,43 @@
+#!/bin/sh -e
+
+# UART device connected to BT module
+BT_TTY_DEV=/dev/ttymxc3
+
+# WIFI SDIO ID file
+WIFI_SDIO_ID_FILE=/sys/class/net/wlan0/device/device
+
+# Start BT hardware
+bt_start()
+{
+	# Exit if BT module is not available
+	[ ! -e ${WIFI_SDIO_ID_FILE} ] && exit 0
+
+    	# Start BT
+	hciattach ${BT_TTY_DEV} any 115200 flow 2>/dev/null
+	hciconfig hci0 up 2>/dev/null
+}
+
+# Stop BT hardware
+bt_stop()
+{
+	# Exit if BT interface is not available
+	[ -e /sys/class/bluetooth/hci0 ] || exit 0
+
+	# Stop BT interface
+	hciconfig hci0 down
+}
+
+###########################
+#  Execution starts here  #
+###########################
+case $1 in
+
+start)
+	bt_start
+	;;
+stop)
+	bt_stop
+	;;
+esac
+
+exit 0

@@ -1,0 +1,148 @@
+#!/bin/sh -e
+
+# GPIO pin to supply WIFI power
+WIFI_PWR_GPIO=119
+
+# GPIO pin to enable WIFI module
+WIFI_EN_GPIO=125
+
+# WIFI MMC host
+WIFI_MMC_HOST=30b50000.mmc
+
+# Bind WIFI device to MMC controller
+wifi_mmc_bind()
+{
+        if [ ! -e /sys/bus/platform/drivers/sdhci-esdhc-imx/${WIFI_MMC_HOST} ]; then
+                echo ${WIFI_MMC_HOST} > /sys/bus/platform/drivers/sdhci-esdhc-imx/bind
+        fi
+}
+
+# Unbind WIFI device from MMC controller
+wifi_mmc_unbind()
+{
+        if [ -e /sys/bus/platform/drivers/sdhci-esdhc-imx/${WIFI_MMC_HOST} ]; then
+                echo ${WIFI_MMC_HOST} > /sys/bus/platform/drivers/sdhci-esdhc-imx/unbind
+        fi
+}
+
+# Export wifi gpio and load wifi dtbo
+wifi_pre_up()
+{
+	echo 119 > /sys/class/gpio/export
+	echo low > /sys/class/gpio/gpio${WIFI_PWR_GPIO}/direction
+
+	echo 125 > /sys/class/gpio/export
+	echo low > /sys/class/gpio/gpio${WIFI_EN_GPIO}/direction
+
+	mkdir -p /sys/kernel/config/device-tree/overlays/wifi
+	cat /boot/eg5120-wireless-wifi5.dtbo > /sys/kernel/config/device-tree/overlays/wifi/dtbo
+}
+
+# Power up WIFI chip
+wifi_up()
+{
+	# Unbind WIFI device from MMC controller
+        wifi_mmc_unbind
+
+        # WIFI_PWR up
+	echo high > /sys/class/gpio/gpio${WIFI_PWR_GPIO}/direction
+	sleep 3
+
+        # WLAN_EN up
+	echo high > /sys/class/gpio/gpio${WIFI_EN_GPIO}/direction
+        sleep 1
+
+        # Bind WIFI device to MMC controller
+        wifi_mmc_bind
+
+        # Load WIFI driver
+	modprobe moal mod_para=nxp/wifi_mod_para.conf
+}
+
+# Power down WIFI chip
+wifi_down()
+{
+        # Unload WIFI driver
+	modprobe -r moal
+
+	# Unload wifi dtbo overlay
+	rmdir /sys/kernel/config/device-tree/overlays/wifi
+
+        # Unbind WIFI device from MMC controller
+        wifi_mmc_unbind
+
+        # WIFI_EN down
+	echo low > /sys/class/gpio/gpio${WIFI_EN_GPIO}/direction
+        sleep 1
+
+        # WIFI_PWR down
+	echo low > /sys/class/gpio/gpio${WIFI_PWR_GPIO}/direction
+}
+
+# Return true if WIFI should be started
+wifi_should_not_be_started()
+{
+        # Do not start WIFI if it is already started
+        [ -d /sys/class/net/wlan0 ] && return 0
+
+        return 1
+}
+
+
+# Return true if WIFI interface exists
+wifi_interface_exists()
+{
+	for i in $(seq 1 5); do
+		[ -d /sys/class/net/wlan0 ] && return 0
+		sleep 1
+	done
+
+	return 1
+}
+
+# Start WIFI hardware
+wifi_start()
+{
+	# Exit if WIFI should not be started
+	wifi_should_not_be_started && exit 0
+
+	# Setup WIFI control GPIOs
+	wifi_pre_up
+
+	# Try starting WIFI hardware
+	for i in $(seq 1 3); do
+		# Up WIFI
+		wifi_up
+
+		# Exit if WIFI interface exists
+		wifi_interface_exists && exit 0
+
+		# Down WIFI
+		wifi_down
+
+		# Wait enough time for discharge
+		sleep 5
+	done
+
+	exit 1
+}
+
+# Stop WIFI hardware
+wifi_stop()
+{
+	wifi_down
+}
+
+###########################
+#  Execution starts here  #
+###########################
+case $1 in
+start)
+	wifi_start
+	;;
+stop)
+	wifi_stop
+	;;
+esac
+
+exit 0
