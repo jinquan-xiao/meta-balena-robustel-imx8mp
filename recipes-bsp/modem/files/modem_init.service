@@ -1,0 +1,11 @@
+[Unit]
+Description=Modem Init Service
+ConditionPathExists=/etc/modem/modem_init.sh
+After=os-udevrules.service ModemManager.service
+
+[Service]
+Type=oneshot
+ExecStart=/etc/modem/modem_init.sh
+
+[Install]
+WantedBy=multi-user.target

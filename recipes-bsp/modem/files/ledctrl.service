@@ -1,0 +1,11 @@
+[Unit]
+Description=LED Control Service
+ConditionPathExists=/etc/modem/ledctrl.sh
+After=modem_init.service
+
+[Service]
+Type=oneshot
+ExecStart=/etc/modem/ledctrl.sh
+
+[Install]
+WantedBy=multi-user.target

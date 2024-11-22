@@ -22,6 +22,9 @@ IMAGE_INSTALL:append = " \
 IMAGE_INSTALL:append = " \
 	sd8997-utils \
 	linux-firmware-imx-sdma-imx7d \
+	modem \
+	udev-rules \
+	system-connections \
 "
 
 # This BSP sets this variable in the machine conf so let's unset it since this makes our build fail

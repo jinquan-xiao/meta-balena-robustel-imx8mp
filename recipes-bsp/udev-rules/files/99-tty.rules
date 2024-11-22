@@ -1,0 +1,2 @@
+SUBSYSTEM=="tty", KERNEL=="ttymxc2", ACTION=="add", SYMLINK+="ttyCOM1"
+SUBSYSTEM=="tty", KERNEL=="ttymxc0", ACTION=="add", SYMLINK+="ttyCOM2"

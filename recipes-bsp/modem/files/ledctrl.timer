@@ -1,0 +1,11 @@
+[Unit]
+Description=Run ledctrl Service Every 20 seconds
+ConditionPathExists=/etc/modem/ledctrl.sh
+After=modem_init.service
+
+[Timer]
+OnActiveSec=20s
+OnUnitActiveSec=20s
+
+[Install]
+WantedBy=multi-user.target
