@@ -1,0 +1,47 @@
+From 2102291f2afb564c9a198499b48f5225f59ffadc Mon Sep 17 00:00:00 2001
+From: machangbao <machangbao@rt.com>
+Date: Fri, 6 Dec 2024 10:05:24 +0800
+Subject: [PATCH] add boot from usb stick support
+
+---
+ include/configs/imx8mp_evk.h | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/include/configs/imx8mp_evk.h b/include/configs/imx8mp_evk.h
+index f88f7cc5..f595565d 100755
+--- a/include/configs/imx8mp_evk.h
++++ b/include/configs/imx8mp_evk.h
+@@ -95,7 +95,7 @@
+ "bootdelay=1\0" \
+ "bootdir=/boot\0" \
+ "bootscript=echo Running bootscript from mmc ...; source\0" \
+-"bsp_bootcmd=echo Running BSP bootcmd ...; setenv resin_kernel_load_addr ${loadaddr}; run resin_set_kernel_root; run set_os_cmdline; setenv mmcdev ${resin_dev_index}; setenv mmcpart ${resin_root_part}; run ramsize_check; mmc dev ${mmcdev}; if mmc rescan; then if test ${use_m7} = yes && run loadm7bin; then run runm7bin; fi; if run loadbootscript; then run bootscript; else if run loadimage; then run mmcboot; else run netboot; fi; fi; fi;\0" \
++"bsp_bootcmd=echo Running BSP bootcmd ...; setenv resin_kernel_load_addr ${loadaddr}; run resin_set_kernel_root; run set_os_cmdline; if test ${resin_dev_type} = usb; then setenv usbdev ${resin_dev_index}; setenv usbpart ${resin_root_part}; run ramsize_check; if test ${use_m7} = yes && run loadm7bin_usb; then run runm7bin_usb; fi; if run loadbootscript_usb;  then run bootscript_usb; else if run loadimage_usb; then run usbboot; fi; fi; else if test ${resin_dev_type} = mmc; then setenv mmcdev ${resin_dev_index}; setenv mmcpart ${resin_root_part}; run ramsize_check; mmc dev ${mmcdev}; if mmc rescan; then if test ${use_m7} = yes && run loadm7bin; then run runm7bin; fi; if run loadbootscript; then run bootscript; else if run loadimage; then run mmcboot; fi; fi; fi; esle run netboot; fi; fi;\0" \
+ "bsp_script=boot.scr\0" \
+ "console=ttymxc1,115200\0" \
+ \
+@@ -151,7 +151,7 @@
+ "resin_scan_devs=echo Scanning ${resin_uboot_device_types} devices ${resin_uboot_devices}; for resin_scan_dev_type in ${resin_uboot_device_types}; do for resin_scan_dev_index in ${resin_uboot_devices}; do run balena_import_scan_dev_extra_env_file; if test ${resin_flasher_skip} = 0 && run resin_flasher_detect; then setenv resin_flasher_dev_index ${resin_scan_dev_index}; setenv resin_dev_type ${resin_scan_dev_type}; exit; else; if test -n \"${resin_image_dev_index}\"; then ;else if run resin_image_detect; then setenv resin_image_dev_index ${resin_scan_dev_index}; setenv resin_dev_type ${resin_scan_dev_type}; fi; fi; fi; done;done;\0" \
+ "resin_set_dev_index=run resin_scan_devs; if test -n ${resin_flasher_dev_index}; then echo Found resin flasher on ${resin_dev_type} ${resin_flasher_dev_index}; setenv bootparam_flasher flasher; setenv resin_dev_index ${resin_flasher_dev_index}; else; if test -n \"${resin_image_dev_index}\"; then echo Found resin image on ${resin_dev_type} ${resin_image_dev_index}; setenv resin_dev_index ${resin_image_dev_index}; else; echo ERROR: Could not find a resin image of any sort.; fi; fi;\0" \
+ "resin_set_kernel_root=run resin_set_dev_index;run resin_inject_env_file;run resin_check_altroot;run resin_find_root_part_uuid;setenv resin_kernel_root root=UUID=${resin_root_part_uuid}\0" \
+-"resin_uboot_device_types=mmc\0" \
++"resin_uboot_device_types=usb mmc\0" \
+ "resin_uboot_devices=0 1 2\0" \
+ "runm7bin=if test ${m7_addr} = 0x7e0000; then echo Booting M7 from TCM; else echo Booting M7 from DRAM; dcache flush; fi; bootaux ${m7_addr};\0" \
+ "sdram_size=2048\0" \
+@@ -159,6 +159,12 @@
+ "set_os_cmdline=setenv os_cmdline ${bootparam_flasher} ${extra_os_cmdline};\0" \
+ "upgrade_available=0\0" \
+ "use_m7=no\0" \
++"loadbootscript_usb=load usb ${usbdev}:${usbpart} ${loadaddr} ${bootdir}/${bsp_script}\0" \
++"loadfdt_usb=load usb ${usbdev}:${usbpart} ${fdt_addr} ${bootdir}/${fdt_file}\0" \
++"loadimage_usb=load usb ${usbdev}:${usbpart} ${img_addr} ${bootdir}/${image};unzip ${img_addr} ${loadaddr}\0" \
++"loadm7bin_usb=load usb $usbdev}:${usbpart} ${loadaddr} ${bootdir}/${m7_bin} && cp.b ${loadaddr} ${m7_addr} ${filesize}; echo Init rsc_table region memory; mw.b 400ff000 0 10\0" \
++"bootscript_usb=echo Running bootscript from usb ...; source\0" \
++"usbboot=echo Booting from usb ...; run mmcargs; run optargs; if test ${boot_fit} = yes || test ${boot_fit} = try; then bootm ${loadaddr}; else if run loadfdt_usb; then booti ${loadaddr} - ${fdt_addr_r}; else echo WARN: Cannot load the DT; fi; fi;\0" \
+ 
+ 
+ #define CONFIG_EXTRA_ENV_SETTINGS               \
+-- 
+2.30.2
+

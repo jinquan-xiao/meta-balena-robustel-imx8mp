@@ -1,0 +1,17 @@
+#!/bin/sh
+
+#
+# Initial flashing of u-boot
+#
+
+set -o errexit
+
+# machine specific data
+uboot_file="imx-boot.bin"
+uboot_device="/dev/mmcblk2boot0"
+
+if [ -f /mnt/boot/$uboot_file ]; then
+	echo 0 > /sys/block/mmcblk2boot0/force_ro
+	dd if=/mnt/boot/$uboot_file of=$uboot_device conv=fdatasync
+	echo 1 > /sys/block/mmcblk2boot0/force_ro
+fi
