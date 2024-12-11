@@ -13,6 +13,6 @@ do_install:append() {
 	install -m 0644 ${WORKDIR}/robustel-blacklist.conf ${D}${sysconfdir}/modprobe.d
 }
 
-do_install:append:imx8mp-var-dart() {
-	install -m 0644 ${WORKDIR}/robustel-hdmi-audio.conf ${D}${sysconfdir}/modprobe.d
-}
+#do_install:append:imx8mp-rbt() {
+#	install -m 0644 ${WORKDIR}/robustel-hdmi-audio.conf ${D}${sysconfdir}/modprobe.d
+#}

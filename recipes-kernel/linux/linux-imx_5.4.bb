@@ -55,13 +55,5 @@ do_compile:append() {
                 oe_runmake dtbs CC="${KERNEL_CC} $cc_extra " LD="${KERNEL_LD}" ${KERNEL_EXTRA_ARGS}
 }
 
-#pkg_postinst:kernel-devicetree:append:imx8qm-var-som () {
-#    cd $D/boot
-#    ln -s ${DEFAULT_DTB_PREFIX}-${DEFAULT_DTB}.dtb ${DEFAULT_DTB_PREFIX}.dtb
-#    ln -s imx8qp-var-som-symphony-${DEFAULT_DTB}.dtb imx8qp-var-som-symphony.dtb
-#    ln -s imx8qm-var-spear-sp8customboard-${DEFAULT_DTB}.dtb imx8qm-var-spear-sp8customboard.dtb
-#    ln -s imx8qp-var-spear-sp8customboard-${DEFAULT_DTB}.dtb imx8qp-var-spear-sp8customboard.dtb
-#}
-
 KERNEL_VERSION_SANITY_SKIP="1"
 COMPATIBLE_MACHINE = "(mx8-nxp-bsp)"

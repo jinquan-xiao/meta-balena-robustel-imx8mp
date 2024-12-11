@@ -1,8 +1,6 @@
 # Copyright (C) 2017-2020 NXP
 # Copyright (C) 2024 Robustel LTD
 
-FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
-
 do_compile() {
     echo "Copying DTBs"
     if [ "mx8m" = "${SOC_FAMILY}" ]; then
