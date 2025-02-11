@@ -16,7 +16,7 @@ wlan0_mac=$(echo "$macs" | grep "wlan0" | awk -F= '{print $2}')
 
 if ! ([ -e $ETH0_CONNECTION ]); then
     echo -e "[connection]
-id=${ETH0_IFNAME}
+id=Wired ${ETH0_IFNAME}
 type=ethernet
 interface-name=${ETH0_IFNAME}
 autoconnect=true
@@ -36,13 +36,11 @@ mtu=1500
 auto-negotiate=true" > $ETH0_CONNECTION
 
     chmod 0600 $ETH0_CONNECTION
-    nmcli connection load $ETH0_CONNECTION
-    nmcli connection up $ETH0_IFNAME
 fi
 
 if ! ([ -e $ETH1_CONNECTION ]); then
     echo -e "[connection]
-id=${ETH1_IFNAME}
+id=Wired ${ETH1_IFNAME}
 type=ethernet
 interface-name=${ETH1_IFNAME}
 autoconnect=true
@@ -61,8 +59,6 @@ mtu=1500
 auto-negotiate=true" > $ETH1_CONNECTION
 
     chmod 0600 $ETH1_CONNECTION
-    nmcli connection load $ETH1_CONNECTION
-    nmcli connection up $ETH1_IFNAME
 fi
 
 if ! ([ -e $WLAN0_CONNECTION ]); then
@@ -87,8 +83,6 @@ ssid=my-wifi
 cloned-mac-address=${wlan0_mac}" > $WLAN0_CONNECTION
 
     chmod 0600 $WLAN0_CONNECTION
-    # off default
-    nmcli radio wifi off
 fi
 
 if ! ([ -e $WWAN0_CONNECTION ]); then
@@ -110,8 +104,6 @@ addr-gen-mode=stable-privacy
 auto-config=true" > $WWAN0_CONNECTION
 
     chmod 0600 $WWAN0_CONNECTION
-    nmcli connection load $WWAN0_CONNECTION
-    nmcli connection up $WWAN0_IFNAME
 fi
 
 exit 0

@@ -1,0 +1,3 @@
+ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth0", RUN+="/bin/sh /etc/connections/system-if-mac-set.sh eth0"
+ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth1", RUN+="/bin/sh /etc/connections/system-if-mac-set.sh eth1"
+ACTION=="add", SUBSYSTEM=="net", KERNEL=="wlan0", RUN+="/bin/sh /etc/connections/system-if-mac-set.sh wlan0"

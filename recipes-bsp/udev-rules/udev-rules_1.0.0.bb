@@ -7,6 +7,7 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-2.0-only;md5=801f80980d171d
 
 SRC_URI = " \
             file://99-tty.rules \
+            file://99-if-mac-init.rules \
 "
 
 RDEPENDS:${PN}:append = "base-files"
@@ -17,6 +18,7 @@ do_install() {
         install -d ${D}${base_libdir}/udev
         install -d ${D}${base_libdir}/udev/rules.d
         install -m 0644 ${S}/99-tty.rules ${D}${base_libdir}/udev/rules.d
+        install -m 0644 ${S}/99-if-mac-init.rules ${D}${base_libdir}/udev/rules.d
 }
 
 INSANE_SKIP_${PN} = "ldflags"
@@ -25,4 +27,5 @@ INHIBIT_PACKAGE_STRIP = "1"
 
 FILES:${PN} = " \
         ${base_libdir}/udev/rules.d/99-tty.rules  \
+        ${base_libdir}/udev/rules.d/99-if-mac-init.rules  \
 "
