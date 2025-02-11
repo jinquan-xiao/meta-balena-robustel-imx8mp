@@ -1,7 +1,7 @@
 [Unit]
 Description=System Connections Init Service
 ConditionPathExists=/etc/connections/system-connections-init.sh
-After=NetworkManager.service dnsmasq.service
+Before=NetworkManager.service dnsmasq.service
 
 [Service]
 Type=oneshot

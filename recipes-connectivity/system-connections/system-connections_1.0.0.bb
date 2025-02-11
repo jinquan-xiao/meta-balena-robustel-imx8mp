@@ -11,6 +11,7 @@ SRC_URI = " \
             file://eth1.conf \
             file://system-connections-init.service \
             file://system-connections-init.sh \
+            file://system-if-mac-set.sh \
             file://read-base-macaddr.c \
             file://Makefile \
 "
@@ -31,6 +32,7 @@ do_install() {
         install -d ${D}${sysconfdir}/connections
         install -m 0755 ${S}/read-base-macaddr ${D}/${sysconfdir}/connections
         install -m 0755 ${S}/system-connections-init.sh ${D}/${sysconfdir}/connections
+        install -m 0755 ${S}/system-if-mac-set.sh ${D}/${sysconfdir}/connections
 
         install -d ${D}${systemd_unitdir}/system
         install -d ${D}${sysconfdir}/systemd/system/multi-user.target.wants
