@@ -1,0 +1,16 @@
+[connection]
+id=Wired eth1
+type=ethernet
+interface-name=eth1
+autoconnect=true
+
+[ipv4]
+method=shared
+address1=192.168.0.1/24
+
+[ipv6]
+method=auto
+addr-gen-mode=default
+
+[ethernet]
+auto-negotiate=true
