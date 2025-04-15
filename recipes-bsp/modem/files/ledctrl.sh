@@ -175,7 +175,7 @@ if [ "$act" = "LTE" ]; then
     fi
 fi
 
-csq=$(mmcli -m "0" --command='AT+CSQ' --timeout=10 | grep -E "\+CSQ:" -m 1 | awk -F [" ":,] '{print $5}')
+csq=$(mmcli -m "$modem_path" --command='AT+CSQ' --timeout=10 | grep -E "\+CSQ:" -m 1 | awk -F [" ":,] '{print $5}')
 csq_led_ctrl "$csq"
 
 exit 0
